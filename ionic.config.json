@@ -1,0 +1,7 @@
+{
+  "name": "hcd",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

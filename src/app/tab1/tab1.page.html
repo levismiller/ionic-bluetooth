@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Calibration
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid class="layout">
+    <ion-row>
+      <ion-col>
+        <ion-label auto-grow="true" position="stacked">Device Output</ion-label>
+        <ion-textarea disabled readonly value={{deviceOutput}}>
+        </ion-textarea>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+
+        <ion-grid class="controls">
+          <ion-row>
+            <ion-col></ion-col>
+            <ion-col>
+              <ion-button (click)="keypadInput('UP')" expand="block" color="dark">Up</ion-button>
+            </ion-col>
+            <ion-col></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="keypadInput('LEFT')" expand="block" color="dark">Left</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="keypadInput('SELECT')" expand="block" color="primary">Select</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="keypadInput('RIGHT')" expand="block" color="dark">Right</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col></ion-col>
+            <ion-col>
+              <ion-button (click)="keypadInput('DOWN')" expand="block" color="dark">Down</ion-button>
+            </ion-col>
+            <ion-col></ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
