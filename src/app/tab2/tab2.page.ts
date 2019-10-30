@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, Events } from '@ionic/angular';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+
 
 @Component({
   selector: 'app-tab2',
@@ -14,12 +15,14 @@ export class Tab2Page {
   private listToggle: boolean = false;
   private pairedDeviceID: number = 0;
   private dataSend: string = "";
+  private dataRcvd: string = "";
 
   constructor(
     private toastController: ToastController,
     private alertController: AlertController,
-    private bluetoothSerial: BluetoothSerial) {
-    this.devices = []
+    private bluetoothSerial: BluetoothSerial, 
+    public events: Events) {
+    this.devices = [];
   }
 
   ngOnInit() {
@@ -27,21 +30,29 @@ export class Tab2Page {
   }
 
   checkBluetoothEnabled() {
-    this.bluetoothSerial.isEnabled().then(success => {
-      this.listPairedDevices();
-    }, error => {
-      this.showError("Please Enable Bluetooth")
-    });
+    this.bluetoothSerial.isEnabled().then(
+      success => {
+        this.listPairedDevices();
+      }, 
+      error => {
+        this.showError("Please Enable Bluetooth")
+      });
   }
 
   listPairedDevices() {
-    this.bluetoothSerial.list().then(success => {
-      this.pairedList = success;
-      this.listToggle = true;
-    }, error => {
-      this.showError("Please Enable Bluetooth")
-      this.listToggle = false;
-    });
+    this.bluetoothSerial.list().then(
+      success => {
+        this.pairedList = success;
+        this.listToggle = true;
+      }, 
+      error => {
+        this.showError("Please Enable Bluetooth")
+        this.listToggle = false;
+      });
+  }
+
+  setPairedDeviceID(idx) {
+    this.pairedDeviceID = idx;
   }
 
   selectDevice() {
@@ -58,21 +69,32 @@ export class Tab2Page {
 
   connect(address) {
     // Attempt to connect device with specified address, call app.deviceConnected if success
-    this.bluetoothSerial.connect(address).subscribe(success => {
-      // this.deviceConnected();
-      this.showToast("Successfully Connected");
-    }, error => {
-      this.showError("Error:Connecting to Device");
-    });
+    this.bluetoothSerial.connect(address).subscribe(
+      success => {
+        this.deviceConnected();
+        this.showToast("Successfully Connected");
+      }, 
+      error => {
+        this.showError("Error:Connecting to Device");
+      });
   }
 
   deviceConnected() {
     // Subscribe to data receiving as soon as the delimiter is read
-    this.bluetoothSerial.subscribe('\n').subscribe(success => {
-      this.showToast("Connected Successfullly");
-    }, error => {
-      this.showError(error);
-    });
+    this.bluetoothSerial.subscribe('msg:').subscribe(
+      success => {
+        // this.bluetoothSerial.read().then(this.readData, this.showError);
+        this.bluetoothSerial.read(
+          success => {
+            this.events.publish('dataRcvd', success);
+          }, 
+          error => {
+            this.showError("Error:Connecting to Device");
+          });
+      }, 
+      error => {
+        this.showError(error);
+      });
   }
 
   deviceDisconnected() {
@@ -83,21 +105,10 @@ export class Tab2Page {
 
   showError(error) {
     console.log('error', error);
-    // let alert = this.alertController.create({
-    //   title: 'Error',
-    //   subTitle: error,
-    //   buttons: ['Dismiss']
-    // });
-    // alert.present();
   }
 
   showToast(msg) {
     console.log('toast', msg);
-    // const toast = this.toastController.create({
-    //   message: msj,
-    //   duration: 1000
-    // });
-    // toast.present();
   }
 
 }

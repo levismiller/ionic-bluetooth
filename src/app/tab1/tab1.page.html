@@ -9,13 +9,15 @@
 <ion-content>
 
   <ion-grid class="layout">
+
     <ion-row>
       <ion-col>
-        <ion-label auto-grow="true" position="stacked">Device Output</ion-label>
-        <ion-textarea disabled readonly value={{deviceOutput}}>
+        <ion-label auto-grow="true" position="stacked"></ion-label>
+        <ion-textarea [(ngModel)]="deviceOutput">
         </ion-textarea>
       </ion-col>
     </ion-row>
+
     <ion-row class="ion-align-items-center">
       <ion-col>
 

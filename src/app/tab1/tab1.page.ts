@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -9,9 +10,18 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 export class Tab1Page {
 
   private deviceOutput: string;
+  private blah: string="blah";
 
-  constructor(private bluetoothSerial: BluetoothSerial) {
-    this.deviceOutput = '-> Compassing\n     RTK';
+  constructor(private bluetoothSerial: BluetoothSerial, 
+              public events: Events, 
+              public changeDetect: ChangeDetectorRef) {
+    this.deviceOutput = '';
+    // this.events.subscribe('dataRcvd', this.getData);
+    this.events.subscribe('dataRcvd', (data) => {
+      console.log(data);
+      this.deviceOutput = data;
+      this.changeDetect.detectChanges();
+    });
   }
 
   public keypadInput(input) {
@@ -21,7 +31,6 @@ export class Tab1Page {
 
   public success(data) {
     console.log('success');
-    this.deviceOutput = data;
   }
 
   public failure(err) {
