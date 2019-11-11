@@ -10,18 +10,21 @@ import { Events } from '@ionic/angular';
 export class Tab1Page {
 
   private deviceOutput: string;
-  private blah: string="blah";
 
   constructor(private bluetoothSerial: BluetoothSerial, 
               public events: Events, 
               public changeDetect: ChangeDetectorRef) {
-    this.deviceOutput = '';
-    // this.events.subscribe('dataRcvd', this.getData);
+    this.deviceOutput = "";
     this.events.subscribe('dataRcvd', (data) => {
-      console.log(data);
-      this.deviceOutput = data;
-      this.changeDetect.detectChanges();
+      if (data){
+        this.deviceOutput = data;
+        this.changeDetect.detectChanges();
+      }
     });
+  }
+
+  ionViewDidEnter() {
+    this.changeDetect.detectChanges();
   }
 
   public keypadInput(input) {

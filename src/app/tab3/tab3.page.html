@@ -6,7 +6,90 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content fullscreen class="ion-padding">
 
-  
+    <header>
+      Descriptions of Parameters
+    </header>
+
+    <ion-item-divider>
+    </ion-item-divider>
+
+    <ion-row justify-content-center>
+        <header>Survey</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> "N/A" indicates that the surveying conditions are not met and thus the unit is not ready to be surveyed in. Once the conditions are met (for AR and ___) this field will show a timer that is used during the surveying process.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Roll</header>
+    </ion-row>
+    <ion-item>
+        <ion-text> The measured roll angle in degrees.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Pitch</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The measured pitch angle in degrees.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Yaw</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The measured yaw (or heading) angle in degrees. Note, this value may be highly inaccurate if the survey conditions are not met.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>AR</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> Provides an indication of the strength of the compassing fix. The minimum acceptable value is specified in parentheses next to the parameter. </ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>D2B</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> An additional parameter used to indicate the quality of the compassing fix. The maximum acceptable value is specified in parentheses next to the parameter.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>CNO</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The carrier-to-noise ratio in dB-Hz. Provides an indication of the GPS signal strength.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>numSvs</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The number of satellites seen by the GPS receiver.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Lat</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The measured latitude in degrees.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Lon</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The measured longitude in degrees.</ion-text>
+    </ion-item>
+
+    <ion-row justify-content-center>
+        <header>Alt</header>
+    </ion-row>
+    <ion-item>
+      <ion-text> The measured height above ellipsoid (HAE) in meters.</ion-text>
+    </ion-item>
+
 </ion-content>

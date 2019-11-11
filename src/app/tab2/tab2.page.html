@@ -1,3 +1,69 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Bluetooth
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+
+  <section>
+    <ion-button expand="block" (click)="listPairedDevices()"><ion-icon name="refresh"></ion-icon>
+      Refresh
+    </ion-button>
+  </section>
+
+  <ion-row>
+    <ion-col>
+
+      <ion-list [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
+        <ion-radio-group> 
+          <ion-item *ngFor="let i of pairedList;let j=index">
+            <ion-label>{{i.name}}</ion-label>
+            <ion-radio value="{{j}}" (ionSelect)="setPairedDeviceID(j)"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+
+    </ion-col>
+  </ion-row>
+
+  <section>
+    <ion-button expand="block" *ngIf="!isConnected" (click)="selectDevice()"><ion-icon name="submit-button"></ion-icon>
+      Connect
+    </ion-button>
+  </section>  
+
+  <section>
+    <ion-button expand="block" *ngIf="isConnected" (click)="disconnectDevice()"><ion-icon name="submit-button"></ion-icon>
+      Disconnect
+    </ion-button>
+  </section>  
+
+
+  <section>        
+        <ion-item>
+          <ion-label>Status:</ion-label>
+          <ion-label slot="end" color="primary" >
+              {{connectionStatus}}
+          </ion-label
+          >
+        </ion-item>
+  </section>  
+ 
+ 
+</ion-content>
+
+
+
+
+
+
+
+<!-- 
 <ion-header>
   <ion-toolbar>
     <ion-title>
@@ -13,7 +79,6 @@
   <ion-row>
     <ion-col>
 
-      <!-- <ion-list radio-group [(ngModel)]="pairedDeviceID" *ngIf="listToggle"> -->
       <ion-list [(ngModel)]="pairedDeviceID" *ngIf="listToggle">
         <ion-radio-group> 
           <ion-item *ngFor="let i of pairedList;let j=index">
@@ -30,4 +95,4 @@
     <ion-icon name="bluetooth"></ion-icon>&nbsp;Connect Bluetooth Devices</button>
   
  
-</ion-content>
+</ion-content> -->

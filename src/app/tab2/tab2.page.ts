@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ToastController, AlertController, Events } from '@ionic/angular';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+
+import { LoadingController } from '@ionic/angular';
+
 
 
 @Component({
@@ -12,17 +15,48 @@ export class Tab2Page {
 
   private devices: any[];
   private pairedList: pairedlist;
+  private unpairedList: pairedlist;
   private listToggle: boolean = false;
-  private pairedDeviceID: number = 0;
+  private pairedDeviceID: number = -1;
   private dataSend: string = "";
   private dataRcvd: string = "";
+  private isConnected: boolean = false;
+  private connectionStatus: string = "Not Connected";
 
   constructor(
     private toastController: ToastController,
     private alertController: AlertController,
     private bluetoothSerial: BluetoothSerial, 
-    public events: Events) {
+    public changeDetect: ChangeDetectorRef,
+    public events: Events, 
+    public loadingController: LoadingController) {
     this.devices = [];
+  }
+
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Connecting...',
+      duration: 10000, 
+      backdropDismiss: true
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    if (role=="backdrop") {
+      this.bluetoothSerial.disconnect();
+    }
+  }
+
+  async presentLoadingResults() {
+    const loading = await this.loadingController.create({
+      message: 'Connected To Device',
+      duration: 3000, 
+      animated: false, 
+      spinner: null
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
   }
 
   ngOnInit() {
@@ -56,15 +90,18 @@ export class Tab2Page {
   }
 
   selectDevice() {
-    let connectedDevice = this.pairedList[this.pairedDeviceID];
-    if (!connectedDevice.address) {
-      this.showError('Select Paired Device to connect');
-      return;
-    }
-    let address = connectedDevice.address;
-    let name = connectedDevice.name;
+    if (!this.isConnected && this.pairedDeviceID != -1) {
+      this.presentLoading();
+      let connectedDevice = this.pairedList[this.pairedDeviceID];
+      if (!connectedDevice.address) {
+        this.showError('Select Paired Device to connect');
+        return;
+      }
+      let address = connectedDevice.address;
+      let name = connectedDevice.name;
 
-    this.connect(address);
+      this.connect(address);
+    }
   }
 
   connect(address) {
@@ -76,20 +113,39 @@ export class Tab2Page {
       }, 
       error => {
         this.showError("Error:Connecting to Device");
+        this.setConnectedStatus(false)
       });
+  }
+
+  setConnectedStatus(status) {
+    if (status) {
+      this.isConnected = true;
+      this.connectionStatus = "Connected";
+      this.loadingController.dismiss();
+      this.presentLoadingResults();
+    }
+    else {
+      this.isConnected = false;
+      this.connectionStatus = "Not Connected";
+    }
+    this.changeDetect.detectChanges();
   }
 
   deviceConnected() {
     // Subscribe to data receiving as soon as the delimiter is read
     this.bluetoothSerial.subscribe('msg:').subscribe(
       success => {
-        // this.bluetoothSerial.read().then(this.readData, this.showError);
         this.bluetoothSerial.read(
           success => {
+            if (!this.isConnected) {
+              this.setConnectedStatus(true);
+            }
+            console.log(success);
             this.events.publish('dataRcvd', success);
           }, 
           error => {
             this.showError("Error:Connecting to Device");
+            this.setConnectedStatus(false);
           });
       }, 
       error => {
@@ -97,10 +153,13 @@ export class Tab2Page {
       });
   }
 
-  deviceDisconnected() {
-    // Unsubscribe from data receiving
-    this.bluetoothSerial.disconnect();
-    this.showToast("Device Disconnected");
+  disconnectDevice() {
+    if (this.isConnected) {
+      // Unsubscribe from data receiving
+      this.bluetoothSerial.disconnect();
+      this.setConnectedStatus(false);
+      this.showToast("Device Disconnected");
+    }
   }
 
   showError(error) {
